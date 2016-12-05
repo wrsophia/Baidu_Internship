@@ -1,6 +1,6 @@
 #!/bin/usr/env ruby
 # coding: gbk
-#get_gzjt.rb
+#get_sztb_gjcx.rb
 #################################
 
 require 'iconv'
@@ -13,21 +13,20 @@ doc = Hpricot(html_in)
 
 f_out = File.open("#{ARGV[1]}","a+:gbk")
 
-if (doc/"#form1 table[2] tr").inner_html.to_s == ""
+if (doc/"div.list>ul>li").inner_html.to_s == ""
     res = Net::HTTP.get_response(URI.parse("#{ARGV[2]}"))
     doc = Hpricot(res.body)
 end
     
 
-doc = (doc/"#form1 table[2]")
-
-(doc/"tr").each do |news|
-    if (news/"a.agray").inner_html != ""
-        href = "http://www.gzjt.gov.cn/gzjt/web/News/" + (news/"a.agray")[0].attributes['href'].strip
-        title = "[guangzhou]" + Iconv.iconv("GBK//IGNORE", "UTF-8", (news/"td[1] span.agray").inner_html.to_s)[0].strip
-        time = Iconv.iconv("GBK//IGNORE", "UTF-8", (news/"td[2] span.agray").inner_html.to_s)[0].strip
+(doc/"div.list>ul>li").each do |news|
+    if (news/"a").inner_html.to_s != ""
+        p_href = (news/"a")[0].attributes['href'].strip
+        href = "http://www.sztb.gov.cn/bsfw/wycx/gjcx/cxtx" + p_href[1 ... p_href.length]
+        title = "[shenzhen]" + Iconv.iconv("GBK//IGNORE", "UTF-8", (news/"a").inner_html.to_s)[0].strip
+        time = Iconv.iconv("GBK//IGNORE", "UTF-8", (news/"span").inner_html.to_s)[0].strip
         now = Time.now
-
+        
         catch :doc_each do
             f_out.pos = 0
             while line = f_out.gets
@@ -38,7 +37,8 @@ doc = (doc/"#form1 table[2]")
             end
             f_out.puts("#{href}\t#{title}\t#{time}\t#{now}\n")
         end
-    end    
+    end   
 end
+
 
 f_out.close

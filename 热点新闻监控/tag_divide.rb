@@ -199,16 +199,13 @@ for name in tag_name
         file = File.open("../../../weibo/output/#{name}_cut", "r")
         email.puts("<h3 align=\"center\">#{day}_weibo_#{name}</h3>\n")
         email.puts("<table align=\"center\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\" width=\"90%\" style=\"border-collapse\: collapse;\">\n")
-        email.puts("<tr><th>title</th><th>released-time</th><th>grabbed-time</th></tr>\n")
+        email.puts("<tr><th>userID</th><th>released-time</th><th>grabbed-time</th><th>content</th></tr>\n")
 
         while line = file.gets
             line = line.chomp
             arr = line.split("\t")
             email.puts("<tr>\n")
             for i in 1 ... arr.length
-                if i > 4
-                    break
-                end
                 if i == 1
                     email.puts(Iconv.iconv("GBK//IGNORE", "UTF-8","<td><a target='_blank' href='#{arr[0]}'>#{arr[i]}</a></td>\n")[0])
                     #email.puts("<td><a target='_blank' href='#{arr[0]}'>#{arr[i]}</a></td>\n")
@@ -231,7 +228,7 @@ if (!res)
 end
 
 if (flag)
-    res = system("cat #{t1}.html | mutt -e 'set content_type=\"text/html\"' -e 'set charset=\"gbk\"' -e 'my_hdr from:WangRuishan@baidu.com' -s \"hot news\" \"map-hotspot@baidu.com;wangruishan@baidu.com\"")
+    res = system("cat #{t1}.html | mutt -e 'set content_type=\"text/html\"' -e 'set charset=\"gbk\"' -e 'my_hdr from:WangRuishan@baidu.com' -s \"hot news\" \"map-hotspot@baidu.com;wangruishan@baidu.com;chenguo04@baidu.com\"")
     if (!res)
         print "false on sending email."
     end
